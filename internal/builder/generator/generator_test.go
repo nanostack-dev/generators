@@ -1,4 +1,3 @@
-// generator_test.go
 package generator
 
 import (
@@ -142,6 +141,10 @@ func TestGenerateWithCustomTypes(t *testing.T) {
 			{Name: "Status", Type: "OrderStatus"},
 			{Name: "Created", Type: "time.Time"},
 		},
+		Imports: []string{
+			`"github.com/google/uuid"`,
+			`"time"`,
+		},
 	}
 
 	tmpDir := t.TempDir()
@@ -158,6 +161,7 @@ func TestGenerateWithCustomTypes(t *testing.T) {
 	}
 
 	generated := string(content)
+	t.Logf("generated file %v", generated)
 	expectedTypes := []string{
 		"uuid.UUID",
 		"[]Item",
@@ -168,6 +172,77 @@ func TestGenerateWithCustomTypes(t *testing.T) {
 	for _, typ := range expectedTypes {
 		if !strings.Contains(generated, typ) {
 			t.Errorf("Generated code missing type: %s", typ)
+		}
+	}
+
+	// Check if imports were correctly added
+	expectedImports := []string{
+		`"github.com/google/uuid"`,
+		`"time"`,
+	}
+
+	for _, imp := range expectedImports {
+		if !strings.Contains(generated, imp) {
+			t.Errorf("Generated code missing import: %s", imp)
+		}
+	}
+
+	// Test content for proper time.Time usage
+	expectedMethodSignatures := []string{
+		"func (b *OrderBuilder) WithCreated(created time.Time) *OrderBuilder",
+	}
+
+	for _, signature := range expectedMethodSignatures {
+		if !strings.Contains(generated, signature) {
+			t.Errorf("Generated code missing method signature: %s", signature)
+		}
+	}
+}
+
+func TestGenerateWithTimeFields(t *testing.T) {
+	structDef := &parser.StructDef{
+		Name:       "Event",
+		PackageStr: "testmodel",
+		Fields: []parser.StructField{
+			{Name: "StartTime", Type: "time.Time"},
+			{Name: "EndTime", Type: "*time.Time"},
+			{Name: "CreatedAt", Type: "time.Time"},
+		},
+		Imports: []string{
+			`"time"`,
+		},
+	}
+
+	tmpDir := t.TempDir()
+	outputFile := filepath.Join(tmpDir, "event_builder.go")
+
+	err := Generate(structDef, "testmodel", outputFile)
+	if err != nil {
+		t.Fatalf("Generate failed: %v", err)
+	}
+
+	content, err := os.ReadFile(outputFile)
+	if err != nil {
+		t.Fatalf("Failed to read output file: %v", err)
+	}
+
+	generated := string(content)
+	t.Logf("Generated code:\n%s", generated)
+	// Check import
+	if !strings.Contains(generated, `"time"`) {
+		t.Error("Generated code missing time import")
+	}
+
+	// Check method signatures
+	expectedSignatures := []string{
+		"func (b *EventBuilder) WithStartTime(startTime time.Time) *EventBuilder",
+		"func (b *EventBuilder) WithEndTime(endTime *time.Time) *EventBuilder",
+		"func (b *EventBuilder) WithCreatedAt(createdAt time.Time) *EventBuilder",
+	}
+
+	for _, signature := range expectedSignatures {
+		if !strings.Contains(generated, signature) {
+			t.Errorf("Generated code missing method signature: %s", signature)
 		}
 	}
 }

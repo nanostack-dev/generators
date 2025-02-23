@@ -1,6 +1,6 @@
 package testmodel
 
-//go:generate go run github.com/nanostack-dev/generators/cmd/builder@latest .
+//go:generate go run github.com/nanostack-dev/generators/cmd/builder/generator .
 
 // @builder
 // @builder:prefix Set
