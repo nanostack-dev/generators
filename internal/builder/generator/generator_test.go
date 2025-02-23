@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nanostack-dev/generators/builder/internal/parser"
+	"github.com/nanostack-dev/generators/internal/builder/parser"
 )
 
 func TestGenerate(t *testing.T) {
