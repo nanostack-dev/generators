@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nanostack-dev/generators/builder/internal/generator"
-	genparser "github.com/nanostack-dev/generators/builder/internal/parser"
+	"github.com/nanostack-dev/generators/internal/builder/generator"
+	genparser "github.com/nanostack-dev/generators/internal/builder/parser"
 )
 
 func main() {

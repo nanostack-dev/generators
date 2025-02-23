@@ -1,0 +1,4 @@
+github.com/dave/jennifer v1.7.1 h1:B4jJJDHelWcDhlRQxWeo0Npa/pYKBLrirAQoTN45txo=
+github.com/dave/jennifer v1.7.1/go.mod h1:nXbxhEmQfOZhWml3D1cDK5M1FLnMSozpbFN/m3RmGZc=
+github.com/nanostack-dev/generators/builder v0.0.0-20250223165928-45767b352d08 h1:Q3OOcFCZ9J0KfgCONDV+y70Iyyo3f5WMrKS0DHSs05o=
+github.com/nanostack-dev/generators/builder v0.0.0-20250223165928-45767b352d08/go.mod h1:4IYyBVx1SJpbpGHdGNknsBXA8ZF2NZnD19LKmkfnKPw=

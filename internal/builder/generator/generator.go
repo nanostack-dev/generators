@@ -3,10 +3,10 @@ package generator
 
 import (
 	"fmt"
+	"github.com/nanostack-dev/generators/internal/builder/parser"
 	"strings"
 
 	"github.com/dave/jennifer/jen"
-	"github.com/nanostack-dev/generators/builder/internal/parser"
 )
 
 func Generate(structDef *parser.StructDef, packageName string, outputFile string) error {
