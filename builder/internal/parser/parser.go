@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"strings"
 )
 
 type StructField struct {
@@ -13,10 +14,17 @@ type StructField struct {
 	Tags map[string]string
 }
 
+type BuilderAnnotations struct {
+	Prefix   string
+	Validate bool
+	Skip     bool
+}
+
 type StructDef struct {
-	Name       string
-	Fields     []StructField
-	PackageStr string
+	Name        string
+	Fields      []StructField
+	PackageStr  string
+	Annotations BuilderAnnotations
 }
 
 func ParseFile(filename string, typeName string) (*StructDef, error) {
@@ -38,6 +46,12 @@ func ParseFile(filename string, typeName string) (*StructDef, error) {
 						return true
 					}
 					structDef.Name = x.Name.Name
+
+					// Parse struct annotations from doc comments
+					if x.Doc != nil {
+						structDef.Annotations = parseAnnotations(x.Doc)
+					}
+
 					for _, field := range s.Fields.List {
 						if len(field.Names) > 0 {
 							structField := StructField{
@@ -79,4 +93,29 @@ func parseTags(tag *ast.BasicLit) map[string]string {
 		return tags
 	}
 	return tags
+}
+func parseAnnotations(comments *ast.CommentGroup) BuilderAnnotations {
+	annotations := BuilderAnnotations{
+		Prefix: "With",
+	}
+
+	if comments == nil {
+		return annotations
+	}
+
+	for _, comment := range comments.List {
+		text := strings.TrimPrefix(comment.Text, "//")
+		text = strings.TrimSpace(text)
+
+		switch {
+		case strings.HasPrefix(text, "@builder:prefix"):
+			annotations.Prefix = strings.TrimSpace(strings.TrimPrefix(text, "@builder:prefix"))
+		case strings.HasPrefix(text, "@builder:validate"):
+			annotations.Validate = true
+		case strings.HasPrefix(text, "@builder:skip"):
+			annotations.Skip = true
+		}
+	}
+
+	return annotations
 }

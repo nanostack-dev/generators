@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"nanostack/generator/internal/generator"
-	"nanostack/generator/internal/parser"
+	"github.com/nanostack-dev/generators/builder/internal/generator"
+	"github.com/nanostack-dev/generators/builder/internal/parser"
 )
 
 func main() {
