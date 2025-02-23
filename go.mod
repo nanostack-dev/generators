@@ -1,4 +1,4 @@
-module nanostack/generator
+module github.com/nanostack-dev/generators/builder
 
 go 1.24.0
 
